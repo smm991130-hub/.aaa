@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="AI Calorie Tracker Pro - Track your calories with AI-powered food recognition">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AI Calorie Tracker Pro</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Onboarding Container -->
+  <div class="onboarding-container" id="onboardingContainer">
+    <!-- Step 1: Welcome -->
+    <div class="onboarding-step active" data-step="1">
+      <div class="onboarding-content animate-slide-up">
+        <div class="onboarding-icon">
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="55" fill="url(#gradient1)" opacity="0.2"/>
+            <circle cx="60" cy="60" r="40" fill="url(#gradient1)" opacity="0.4"/>
+            <path d="M60 20V40M60 80V100M20 60H40M80 60H100" stroke="url(#gradient1)" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="15" fill="url(#gradient1)"/>
+            <defs>
+              <linearGradient id="gradient1" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="onboarding-title" data-i18n="app.welcome">Welcome to AI Calorie Tracker Pro</h1>
+        <p class="onboarding-subtitle" data-i18n="onboarding.subtitle">Tell us about yourself to personalize your experience</p>
+        <button class="btn btn-primary btn-large" onclick="nextStep(2)" data-i18n="onboarding.next">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Name -->
+    <div class="onboarding-step" data-step="2">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.name">Your Name</h2>
+        <div class="form-group">
+          <input type="text" class="form-input form-input-large" id="userName" placeholder="Enter your name">
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(1)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(3)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Age -->
+    <div class="onboarding-step" data-step="3">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.age">Age</h2>
+        <div class="form-group">
+          <input type="number" class="form-input form-input-large" id="userAge" placeholder="Enter your age" min="1" max="120">
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(2)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(4)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Gender -->
+    <div class="onboarding-step" data-step="4">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.gender">Gender</h2>
+        <div class="gender-options">
+          <button class="gender-option" data-gender="male" onclick="selectGender('male')">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="25" stroke="currentColor" stroke-width="2"/>
+              <path d="M30 15V45M30 15L20 25M30 15L40 25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="onboarding.male">Male</span>
+          </button>
+          <button class="gender-option" data-gender="female" onclick="selectGender('female')">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="25" stroke="currentColor" stroke-width="2"/>
+              <path d="M30 15V45M30 15L20 25M30 15L40 25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="onboarding.female">Female</span>
+          </button>
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(3)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(5)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Height -->
+    <div class="onboarding-step" data-step="5">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.height">Height (cm)</h2>
+        <div class="form-group">
+          <input type="number" class="form-input form-input-large" id="userHeight" placeholder="Enter your height" min="50" max="250">
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(4)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(6)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6: Current Weight -->
+    <div class="onboarding-step" data-step="6">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.weight">Current Weight (kg)</h2>
+        <div class="form-group">
+          <input type="number" class="form-input form-input-large" id="userWeight" placeholder="Enter your current weight" min="20" max="300" step="0.1">
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(5)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(7)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 7: Goal Weight -->
+    <div class="onboarding-step" data-step="7">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.goal_weight">Goal Weight (kg)</h2>
+        <div class="form-group">
+          <input type="number" class="form-input form-input-large" id="goalWeight" placeholder="Enter your goal weight" min="20" max="300" step="0.1">
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(6)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="nextStep(8)" data-i18n="onboarding.next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 8: Goal Type -->
+    <div class="onboarding-step" data-step="8">
+      <div class="onboarding-content animate-slide-up">
+        <div class="step-indicator">
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot completed"></span>
+          <span class="step-dot active"></span>
+        </div>
+        <h2 class="onboarding-title" data-i18n="onboarding.goal_type">What's your goal?</h2>
+        <div class="goal-options">
+          <button class="goal-option" data-goal="lose" onclick="selectGoal('lose')">
+            <div class="goal-icon">📉</div>
+            <span data-i18n="onboarding.lose">Lose Weight</span>
+          </button>
+          <button class="goal-option" data-goal="maintain" onclick="selectGoal('maintain')">
+            <div class="goal-icon">⚖️</div>
+            <span data-i18n="onboarding.maintain">Maintain Weight</span>
+          </button>
+          <button class="goal-option" data-goal="gain" onclick="selectGoal('gain')">
+            <div class="goal-icon">📈</div>
+            <span data-i18n="onboarding.gain">Gain Weight</span>
+          </button>
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-ghost" onclick="prevStep(7)" data-i18n="common.back">Back</button>
+          <button class="btn btn-primary" onclick="completeOnboarding()" data-i18n="onboarding.finish">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/language.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Onboarding Logic
+    let currentStep = 1;
+    let userData = {
+      name: '',
+      age: '',
+      gender: '',
+      height: '',
+      weight: '',
+      goalWeight: '',
+      goalType: ''
+    };
+
+    function nextStep(step) {
+      // Validate current step
+      if (!validateStep(currentStep)) {
+        return;
+      }
+
+      // Save data
+      saveStepData(currentStep);
+
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+      
+      // Show next step
+      currentStep = step;
+      document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+      
+      // Animate
+      document.querySelector(`[data-step="${currentStep}"] .onboarding-content`).classList.add('animate-slide-up');
+    }
+
+    function prevStep(step) {
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+      
+      // Show previous step
+      currentStep = step;
+      document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+    }
+
+    function validateStep(step) {
+      switch(step) {
+        case 2:
+          const name = document.getElementById('userName').value.trim();
+          if (!name) {
+            showToast('Please enter your name', 'error');
+            return false;
+          }
+          break;
+        case 3:
+          const age = document.getElementById('userAge').value;
+          if (!age || age < 1 || age > 120) {
+            showToast('Please enter a valid age', 'error');
+            return false;
+          }
+          break;
+        case 4:
+          if (!userData.gender) {
+            showToast('Please select your gender', 'error');
+            return false;
+          }
+          break;
+        case 5:
+          const height = document.getElementById('userHeight').value;
+          if (!height || height < 50 || height > 250) {
+            showToast('Please enter a valid height', 'error');
+            return false;
+          }
+          break;
+        case 6:
+          const weight = document.getElementById('userWeight').value;
+          if (!weight || weight < 20 || weight > 300) {
+            showToast('Please enter a valid weight', 'error');
+            return false;
+          }
+          break;
+        case 7:
+          const goalWeight = document.getElementById('goalWeight').value;
+          if (!goalWeight || goalWeight < 20 || goalWeight > 300) {
+            showToast('Please enter a valid goal weight', 'error');
+            return false;
+          }
+          break;
+        case 8:
+          if (!userData.goalType) {
+            showToast('Please select your goal', 'error');
+            return false;
+          }
+          break;
+      }
+      return true;
+    }
+
+    function saveStepData(step) {
+      switch(step) {
+        case 2:
+          userData.name = document.getElementById('userName').value.trim();
+          break;
+        case 3:
+          userData.age = parseInt(document.getElementById('userAge').value);
+          break;
+        case 5:
+          userData.height = parseInt(document.getElementById('userHeight').value);
+          break;
+        case 6:
+          userData.weight = parseFloat(document.getElementById('userWeight').value);
+          break;
+        case 7:
+          userData.goalWeight = parseFloat(document.getElementById('goalWeight').value);
+          break;
+      }
+    }
+
+    function selectGender(gender) {
+      userData.gender = gender;
+      document.querySelectorAll('.gender-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      document.querySelector(`[data-gender="${gender}"]`).classList.add('selected');
+    }
+
+    function selectGoal(goal) {
+      userData.goalType = goal;
+      document.querySelectorAll('.goal-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      document.querySelector(`[data-goal="${goal}"]`).classList.add('selected');
+    }
+
+    function completeOnboarding() {
+      if (!validateStep(8)) {
+        return;
+      }
+
+      // Calculate BMI and daily calories
+      const heightInMeters = userData.height / 100;
+      const bmi = userData.weight / (heightInMeters * heightInMeters);
+      
+      // Calculate BMR (Mifflin-St Jeor Equation)
+      let bmr;
+      if (userData.gender === 'male') {
+        bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
+      } else {
+        bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
+      }
+
+      // Adjust based on goal
+      let dailyCalories;
+      switch(userData.goalType) {
+        case 'lose':
+          dailyCalories = Math.round(bmr * 1.2 - 500);
+          break;
+        case 'gain':
+          dailyCalories = Math.round(bmr * 1.2 + 500);
+          break;
+        default:
+          dailyCalories = Math.round(bmr * 1.2);
+      }
+
+      // Calculate macros
+      const protein = Math.round((dailyCalories * 0.3) / 4);
+      const carbs = Math.round((dailyCalories * 0.4) / 4);
+      const fats = Math.round((dailyCalories * 0.3) / 9);
+
+      // Save user data
+      const completeUserData = {
+        ...userData,
+        bmi: Math.round(bmi * 10) / 10,
+        dailyCalories,
+        protein,
+        carbs,
+        fats,
+        water: 8,
+        steps: 0,
+        caloriesBurned: 0,
+        completedOnboarding: true,
+        createdAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('userData', JSON.stringify(completeUserData));
+      
+      // Show success animation
+      showToast('Setup complete! Redirecting to dashboard...', 'success');
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type} active`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Check if user already completed onboarding
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedData = localStorage.getItem('userData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        if (data.completedOnboarding) {
+          window.location.href = 'dashboard.html';
+        }
+      }
+    });
+  </script>
+
+  <style>
+    .onboarding-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .onboarding-step {
+      display: none;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .onboarding-step.active {
+      display: block;
+    }
+
+    .onboarding-content {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .onboarding-icon {
+      margin-bottom: 24px;
+    }
+
+    .onboarding-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+
+    .onboarding-subtitle {
+      color: #64748b;
+      font-size: 1rem;
+      margin-bottom: 32px;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .step-dot.active {
+      background: #6366f1;
+      transform: scale(1.5);
+    }
+
+    .step-dot.completed {
+      background: #10b981;
+    }
+
+    .form-input-large {
+      font-size: 1.25rem;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    .gender-options {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .gender-option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 24px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .gender-option:hover {
+      border-color: #6366f1;
+      transform: translateY(-2px);
+    }
+
+    .gender-option.selected {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .gender-option svg {
+      color: #64748b;
+    }
+
+    .gender-option.selected svg {
+      color: #6366f1;
+    }
+
+    .goal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .goal-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .goal-option:hover {
+      border-color: #6366f1;
+      transform: translateX(4px);
+    }
+
+    .goal-option.selected {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .goal-icon {
+      font-size: 2rem;
+    }
+
+    .onboarding-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .onboarding-actions .btn {
+      flex: 1;
+    }
+
+    .btn-large {
+      width: 100%;
+      padding: 16px 32px;
+      font-size: 1.125rem;
+    }
+
+    @media (max-width: 480px) {
+      .onboarding-content {
+        padding: 32px 24px;
+      }
+
+      .onboarding-title {
+        font-size: 1.5rem;
+      }
+
+      .gender-options {
+        flex-direction: column;
+      }
+    }
+  </style>
+</body>
+</html>

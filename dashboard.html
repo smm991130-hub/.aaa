@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="AI Calorie Tracker Pro - Dashboard">
+  <meta name="theme-color" content="#6366f1">
+  <title>Dashboard - AI Calorie Tracker Pro</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="avatar" id="userAvatar">U</div>
+      <div>
+        <h1 class="header-title" id="greeting">Good Morning</h1>
+        <p class="header-subtitle" id="userName">User</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="toggleLanguage()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </button>
+      <button class="btn btn-ghost" onclick="toggleTheme()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Calories Progress -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-1">
+        <div class="progress-section">
+          <div class="progress-circle">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle class="progress-circle-bg" cx="60" cy="60" r="50"/>
+              <circle class="progress-circle-fill" id="calorieProgress" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="progress-circle-text">
+              <span id="caloriesConsumed">0</span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">/ <span id="calorieGoal">2000</span></span>
+            </div>
+          </div>
+          <div class="progress-info">
+            <h3 data-i18n="dashboard.calories_consumed">Calories Consumed</h3>
+            <p class="progress-remaining" data-i18n="dashboard.calories_remaining">Remaining: <span id="caloriesRemaining">2000</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Macros -->
+    <section class="section">
+      <h2 class="section-title" data-i18n="dashboard.title">Nutrition</h2>
+      <div class="grid-3">
+        <div class="stat-card animate-slide-up stagger-2">
+          <span class="stat-label" data-i18n="dashboard.protein">Protein</span>
+          <span class="stat-value" id="proteinValue">0g</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="proteinBar" style="width: 0%; background: var(--primary);"></div>
+          </div>
+          <span class="stat-sub">/ <span id="proteinGoal">150</span>g</span>
+        </div>
+        <div class="stat-card animate-slide-up stagger-3">
+          <span class="stat-label" data-i18n="dashboard.carbs">Carbs</span>
+          <span class="stat-value" id="carbsValue">0g</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="carbsBar" style="width: 0%; background: var(--secondary);"></div>
+          </div>
+          <span class="stat-sub">/ <span id="carbsGoal">200</span>g</span>
+        </div>
+        <div class="stat-card animate-slide-up stagger-4">
+          <span class="stat-label" data-i18n="dashboard.fats">Fats</span>
+          <span class="stat-value" id="fatsValue">0g</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="fatsBar" style="width: 0%; background: var(--accent);"></div>
+          </div>
+          <span class="stat-sub">/ <span id="fatsGoal">65</span>g</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="section">
+      <div class="grid-2">
+        <div class="stat-card animate-slide-up stagger-5">
+          <span class="stat-label" data-i18n="dashboard.water">Water Intake</span>
+          <span class="stat-value"><span id="waterCount">0</span>/8</span>
+          <button class="btn btn-sm btn-primary" onclick="addWater()" style="margin-top: 8px;">+</button>
+        </div>
+        <div class="stat-card animate-slide-up stagger-6">
+          <span class="stat-label" data-i18n="dashboard.weight">Current Weight</span>
+          <span class="stat-value"><span id="currentWeight">0</span> kg</span>
+          <span class="stat-change" id="weightChange">-</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Stats -->
+    <section class="section">
+      <div class="grid-2">
+        <div class="stat-card animate-slide-up stagger-7">
+          <span class="stat-label" data-i18n="dashboard.steps">Steps</span>
+          <span class="stat-value" id="stepsCount">0</span>
+        </div>
+        <div class="stat-card animate-slide-up stagger-8">
+          <span class="stat-label" data-i18n="dashboard.calories_burned">Calories Burned</span>
+          <span class="stat-value" id="caloriesBurned">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Today's Meals -->
+    <section class="section">
+      <h2 class="section-title" data-i18n="history.title">Today's Meals</h2>
+      <div id="mealsList" class="meals-list">
+        <div class="empty-state">
+          <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 6v6l4 2"/>
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+          <p class="empty-state-text" data-i18n="history.no_data">No meals logged today</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Tips -->
+    <section class="section">
+      <div class="glass-card animate-slide-up">
+        <h3 data-i18n="tips.title">AI Health Tips</h3>
+        <p id="aiTip" data-i18n="tips.tip_1">Drink at least 8 glasses of water daily</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Action Button -->
+  <button class="btn btn-primary btn-float fab-float" onclick="openScanner()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+  </button>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <button class="navbar-item active" onclick="navigate('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span data-i18n="dashboard.title">Dashboard</span>
+    </button>
+    <button class="navbar-item" onclick="navigate('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+      </svg>
+      <span data-i18n="history.title">History</span>
+    </button>
+    <button class="navbar-item" onclick="navigate('statistics')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      <span data-i18n="statistics.title">Statistics</span>
+    </button>
+    <button class="navbar-item" onclick="navigate('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span data-i18n="settings.title">Settings</span>
+    </button>
+  </nav>
+
+  <!-- Scanner Modal -->
+  <div class="modal" id="scannerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="scanner.title">AI Food Scanner</h3>
+        <button class="modal-close" onclick="closeScanner()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="scanner-content">
+        <div id="scannerPreview" class="scanner-preview">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <p data-i18n="scanner.subtitle">Scan or upload food image</p>
+        </div>
+        <div id="scanningResult" class="scanning-result" style="display: none;">
+          <div id="foodImageContainer"></div>
+          <h4 id="detectedFoodName" data-i18n="scanner.food_detected">Food Detected</h4>
+          <div class="food-stats">
+            <div class="food-stat">
+              <span data-i18n="scanner.calories">Calories</span>
+              <strong id="foodCalories">0</strong>
+            </div>
+            <div class="food-stat">
+              <span data-i18n="dashboard.protein">Protein</span>
+              <strong id="foodProtein">0g</strong>
+            </div>
+            <div class="food-stat">
+              <span data-i18n="dashboard.carbs">Carbs</span>
+              <strong id="foodCarbs">0g</strong>
+            </div>
+            <div class="food-stat">
+              <span data-i18n="dashboard.fats">Fats</span>
+              <strong id="foodFats">0g</strong>
+            </div>
+          </div>
+        </div>
+        <div id="scannerError" class="scanner-error" style="display: none;">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p data-i18n="scanner.not_food">This image is not food. Please upload a food image.</p>
+        </div>
+        <div class="scanner-actions">
+          <button class="btn btn-primary" onclick="takePhoto()" data-i18n="scanner.take_photo">Take Photo</button>
+          <button class="btn btn-secondary" onclick="uploadImage()" data-i18n="scanner.upload_image">Upload Image</button>
+          <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+          <button class="btn btn-accent" id="addFoodBtn" onclick="addScannedFood()" style="display: none;" data-i18n="scanner.add_to_log">Add to Log</button>
+        </div>
+        <div id="scanningSpinner" class="scanning-spinner" style="display: none;">
+          <div class="spinner"></div>
+          <p data-i18n="scanner.scanning">Scanning...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/language.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+  
+  <style>
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .progress-info {
+      text-align: center;
+    }
+
+    .progress-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.25rem;
+    }
+
+    .progress-remaining {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .meals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .meal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .meal-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meal-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .meal-calories {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .meal-time {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .scanner-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .scanner-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 40px;
+      border: 2px dashed var(--glass-border);
+      border-radius: var(--radius-lg);
+      color: var(--text-tertiary);
+    }
+
+    .scanner-preview svg {
+      width: 80px;
+      height: 80px;
+    }
+
+    .scanning-result {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #foodImageContainer {
+      width: 100%;
+      height: 200px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+
+    #foodImageContainer img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .food-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .food-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+
+    .food-stat span {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .food-stat strong {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+
+    .scanner-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: var(--radius-md);
+      color: var(--danger);
+    }
+
+    .scanner-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scanner-actions .btn {
+      width: 100%;
+    }
+
+    .scanning-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 40px;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 0.875rem;
+    }
+  </style>
+</body>
+</html>

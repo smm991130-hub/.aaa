@@ -1,0 +1,35 @@
+{
+  "name": "ai-calorie-tracker-pro",
+  "version": "1.0.0",
+  "description": "AI Calorie Tracker Pro - Track your calories with AI-powered food recognition",
+  "main": "index.html",
+  "scripts": {
+    "start": "capacitor run android",
+    "build": "capacitor build android",
+    "sync": "capacitor sync android",
+    "open": "capacitor open android"
+  },
+  "keywords": [
+    "calorie",
+    "tracker",
+    "ai",
+    "food",
+    "recognition",
+    "health",
+    "fitness"
+  ],
+  "author": "AI Calorie Tracker Pro",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/camera": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="AI Calorie Tracker Pro - Statistics">
+  <meta name="theme-color" content="#6366f1">
+  <title>Statistics - AI Calorie Tracker Pro</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1 class="header-title" data-i18n="statistics.title">Statistics</h1>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="exportStatistics()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Time Period Selector -->
+    <section class="section">
+      <div class="period-selector">
+        <button class="period-btn active" data-period="7" onclick="selectPeriod(7)" data-i18n="statistics.last_7_days">Last 7 Days</button>
+        <button class="period-btn" data-period="30" onclick="selectPeriod(30)" data-i18n="statistics.last_30_days">Last 30 Days</button>
+      </div>
+    </section>
+
+    <!-- BMI Card -->
+    <section class="section">
+      <div class="glass-card animate-slide-up">
+        <div class="bmi-section">
+          <div class="progress-circle">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle class="progress-circle-bg" cx="70" cy="70" r="60"/>
+              <circle class="progress-circle-fill" id="bmiCircle" cx="70" cy="70" r="60" stroke-dasharray="377" stroke-dashoffset="377"/>
+            </svg>
+            <div class="progress-circle-text">
+              <span id="bmiValue">0</span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">BMI</span>
+            </div>
+          </div>
+          <div class="bmi-info">
+            <h3 data-i18n="statistics.bmi">Body Mass Index</h3>
+            <p class="bmi-category" id="bmiCategory">-</p>
+            <div class="bmi-scale">
+              <div class="bmi-scale-item" data-category="underweight">
+                <span data-i18n="goals.bmi_underweight">Underweight</span>
+              </div>
+              <div class="bmi-scale-item" data-category="normal">
+                <span data-i18n="goals.bmi_normal">Normal</span>
+              </div>
+              <div class="bmi-scale-item" data-category="overweight">
+                <span data-i18n="goals.bmi_overweight">Overweight</span>
+              </div>
+              <div class="bmi-scale-item" data-category="obese">
+                <span data-i18n="goals.bmi_obese">Obese</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weight Progress Chart -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-1">
+        <h3 data-i18n="statistics.weight_progress">Weight Progress</h3>
+        <canvas id="weightChart" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Calories Chart -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-2">
+        <h3 data-i18n="statistics.calories">Calories Intake</h3>
+        <canvas id="caloriesChart" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Macros Chart -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-3">
+        <h3 data-i18n="dashboard.protein">Macros Distribution</h3>
+        <canvas id="macrosChart" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Weekly Progress -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-4">
+        <h3 data-i18n="statistics.weekly_progress">Weekly Progress</h3>
+        <div class="weekly-stats">
+          <div class="weekly-stat">
+            <span class="weekly-stat-label" data-i18n="history.calories">Avg Calories</span>
+            <span class="weekly-stat-value" id="weeklyAvgCalories">0</span>
+          </div>
+          <div class="weekly-stat">
+            <span class="weekly-stat-label" data-i18n="dashboard.protein">Avg Protein</span>
+            <span class="weekly-stat-value" id="weeklyAvgProtein">0g</span>
+          </div>
+          <div class="weekly-stat">
+            <span class="weekly-stat-label" data-i18n="dashboard.weight">Weight Change</span>
+            <span class="weekly-stat-value" id="weeklyWeightChange">0 kg</span>
+          </div>
+          <div class="weekly-stat">
+            <span class="weekly-stat-label">Goal Progress</span>
+            <span class="weekly-stat-value" id="goalProgress">0%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Streak -->
+    <section class="section">
+      <div class="glass-card animate-slide-up stagger-5">
+        <div class="streak-section">
+          <div class="streak-icon">🔥</div>
+          <div class="streak-info">
+            <h3 data-i18n="statistics.weekly_progress">Current Streak</h3>
+            <p class="streak-count"><span id="streakDays">0</span> days</p>
+            <p class="streak-message">Keep it up!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <button class="navbar-item" onclick="navigate('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span data-i18n="dashboard.title">Dashboard</span>
+    </button>
+    <button class="navbar-item" onclick="navigate('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 8v4l3 3m6-3a9 9 0 0 1-18 0 9 9 0 0 1 18 0z"/>
+      </svg>
+      <span data-i18n="history.title">History</span>
+    </button>
+    <button class="navbar-item active" onclick="navigate('statistics')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      <span data-i18n="statistics.title">Statistics</span>
+    </button>
+    <button class="navbar-item" onclick="navigate('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span data-i18n="settings.title">Settings</span>
+    </button>
+  </nav>
+
+  <!-- JavaScript -->
+  <script src="js/language.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let selectedPeriod = 7;
+    let weightChart = null;
+    let caloriesChart = null;
+    let macrosChart = null;
+
+    function selectPeriod(days) {
+      selectedPeriod = days;
+      document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-period="${days}"]`).classList.add('active');
+      loadStatistics();
+    }
+
+    function loadStatistics() {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const foodHistory = JSON.parse(localStorage.getItem('foodHistory') || '[]');
+      
+      // Calculate BMI
+      if (userData.height && userData.weight) {
+        const heightInMeters = userData.height / 100;
+        const bmi = userData.weight / (heightInMeters * heightInMeters);
+        const roundedBMI = Math.round(bmi * 10) / 10;
+        
+        document.getElementById('bmiValue').textContent = roundedBMI;
+        
+        // Update BMI circle
+        const circumference = 377;
+        const progress = Math.min((bmi / 40) * circumference, circumference);
+        document.getElementById('bmiCircle').style.strokeDashoffset = circumference - progress;
+        
+        // Set BMI category
+        let category = '';
+        if (bmi < 18.5) {
+          category = 'underweight';
+        } else if (bmi < 25) {
+          category = 'normal';
+        } else if (bmi < 30) {
+          category = 'overweight';
+        } else {
+          category = 'obese';
+        }
+        
+        document.getElementById('bmiCategory').textContent = document.querySelector(`[data-category="${category}"] span`).textContent;
+        
+        // Highlight current category
+        document.querySelectorAll('.bmi-scale-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        document.querySelector(`[data-category="${category}"]`).classList.add('active');
+      }
+      
+      // Filter history by period
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - selectedPeriod);
+      const filteredHistory = foodHistory.filter(item => new Date(item.date) >= cutoffDate);
+      
+      // Render charts
+      renderWeightChart(filteredHistory);
+      renderCaloriesChart(filteredHistory);
+      renderMacrosChart(filteredHistory);
+      
+      // Calculate weekly stats
+      calculateWeeklyStats(filteredHistory, userData);
+      
+      // Calculate streak
+      calculateStreak(foodHistory);
+    }
+
+    function renderWeightChart(history) {
+      const ctx = document.getElementById('weightChart').getContext('2d');
+      
+      // Get unique dates with weight data
+      const weightData = {};
+      history.forEach(item => {
+        if (item.weight) {
+          const date = item.date.split('T')[0];
+          if (!weightData[date] || new Date(item.date) > new Date(weightData[date].date)) {
+            weightData[date] = { date: item.date, weight: item.weight };
+          }
+        }
+      });
+      
+      const sortedData = Object.values(weightData).sort((a, b) => new Date(a.date) - new Date(b.date));
+      const labels = sortedData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const data = sortedData.map(d => d.weight);
+      
+      if (weightChart) {
+        weightChart.destroy();
+      }
+      
+      weightChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Weight (kg)',
+            data: data,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false
+            }
+          }
+        }
+      });
+    }
+
+    function renderCaloriesChart(history) {
+      const ctx = document.getElementById('caloriesChart').getContext('2d');
+      
+      // Group by date
+      const grouped = {};
+      history.forEach(item => {
+        const date = item.date.split('T')[0];
+        if (!grouped[date]) {
+          grouped[date] = 0;
+        }
+        grouped[date] += item.calories;
+      });
+      
+      const sortedDates = Object.keys(grouped).sort();
+      const labels = sortedDates.map(date => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const data = sortedDates.map(date => grouped[date]);
+      
+      if (caloriesChart) {
+        caloriesChart.destroy();
+      }
+      
+      caloriesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Calories',
+            data: data,
+            backgroundColor: 'rgba(99, 102, 241, 0.8)',
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    function renderMacrosChart(history) {
+      const ctx = document.getElementById('macrosChart').getContext('2d');
+      
+      const totalProtein = history.reduce((sum, item) => sum + (item.protein || 0), 0);
+      const totalCarbs = history.reduce((sum, item) => sum + (item.carbs || 0), 0);
+      const totalFats = history.reduce((sum, item) => sum + (item.fats || 0), 0);
+      
+      if (macrosChart) {
+        macrosChart.destroy();
+      }
+      
+      macrosChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Protein', 'Carbs', 'Fats'],
+          datasets: [{
+            data: [totalProtein, totalCarbs, totalFats],
+            backgroundColor: ['#6366f1', '#ec4899', '#10b981'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          },
+          cutout: '60%'
+        }
+      });
+    }
+
+    function calculateWeeklyStats(history, userData) {
+      if (history.length === 0) return;
+      
+      const avgCalories = Math.round(history.reduce((sum, item) => sum + item.calories, 0) / history.length);
+      const avgProtein = Math.round(history.reduce((sum, item) => sum + (item.protein || 0), 0) / history.length);
+      
+      // Calculate weight change
+      const weightData = history.filter(item => item.weight);
+      let weightChange = 0;
+      if (weightData.length >= 2) {
+        const firstWeight = weightData[0].weight;
+        const lastWeight = weightData[weightData.length - 1].weight;
+        weightChange = (lastWeight - firstWeight).toFixed(1);
+      }
+      
+      // Calculate goal progress
+      let goalProgress = 0;
+      if (userData.weight && userData.goalWeight) {
+        const totalChange = Math.abs(userData.goalWeight - userData.weight);
+        const currentChange = Math.abs((userData.weight - parseFloat(weightChange)) - userData.weight);
+        goalProgress = totalChange > 0 ? Math.round((currentChange / totalChange) * 100) : 0;
+      }
+      
+      document.getElementById('weeklyAvgCalories').textContent = avgCalories;
+      document.getElementById('weeklyAvgProtein').textContent = avgProtein + 'g';
+      document.getElementById('weeklyWeightChange').textContent = (weightChange >= 0 ? '+' : '') + weightChange + ' kg';
+      document.getElementById('goalProgress').textContent = goalProgress + '%';
+    }
+
+    function calculateStreak(history) {
+      if (history.length === 0) {
+        document.getElementById('streakDays').textContent = '0';
+        return;
+      }
+      
+      // Group by date
+      const dates = [...new Set(history.map(item => item.date.split('T')[0]))].sort().reverse();
+      
+      let streak = 0;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      for (let i = 0; i < dates.length; i++) {
+        const checkDate = new Date(dates[i]);
+        const expectedDate = new Date(today);
+        expectedDate.setDate(expectedDate.getDate() - i);
+        
+        if (checkDate.toDateString() === expectedDate.toDateString()) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      
+      document.getElementById('streakDays').textContent = streak;
+    }
+
+    function exportStatistics() {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const foodHistory = JSON.parse(localStorage.getItem('foodHistory') || '[]');
+      
+      const stats = {
+        userData: userData,
+        totalMeals: foodHistory.length,
+        totalCalories: foodHistory.reduce((sum, item) => sum + item.calories, 0),
+        exportDate: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(stats, null, 2)], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'statistics_export.json';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+      showToast('Statistics exported successfully', 'success');
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type} active`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStatistics();
+    });
+  </script>
+
+  <style>
+    .bmi-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .bmi-info {
+      text-align: center;
+    }
+
+    .bmi-info h3 {
+      margin: 0 0 8px 0;
+    }
+
+    .bmi-category {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 8px 0 16px 0;
+    }
+
+    .bmi-scale {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .bmi-scale-item {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .bmi-scale-item.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .weekly-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .weekly-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+
+    .weekly-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .weekly-stat-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .streak-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .streak-icon {
+      font-size: 3rem;
+    }
+
+    .streak-info h3 {
+      margin: 0 0 4px 0;
+    }
+
+    .streak-count {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 4px 0;
+    }
+
+    .streak-message {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  </style>
+</body>
+</html>
